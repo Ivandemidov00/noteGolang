@@ -1,0 +1,9 @@
+
+*.txt
+*.iml
+*.ipr
+*.iws
+.idea/
+/build/
+/dist/
+/out/
