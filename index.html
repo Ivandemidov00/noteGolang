@@ -5,8 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-<h1>fjdjdj</h1>
-
+{{$data := .}}
+{{ range $index, $chunk:= .FileN.NameFile}}
+<li><a href="view/{{index $data.FileN.BegimFileName $index}}">${{index $data.FileN.NameFile $index}}</a></li>
+{{ end }}
 
 </body>
 </html>

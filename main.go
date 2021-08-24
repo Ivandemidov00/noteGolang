@@ -8,18 +8,28 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 )
 
 type Page struct {
 	Title string
 	Body  []byte
 }
-
+type File struct {
+	NameFile []string
+	BegimFileName []string
+}
+type Name struct {
+	FileN File
+	//NameFile []string
+	//BegimFileName []string
+}
 func (p *Page) save() error {
 	filename := p.Title + ".txt"
 	return ioutil.WriteFile(filename, p.Body, 0600)
@@ -28,7 +38,35 @@ func (p *Page) delete() error {
 	filename :=p.Title+".txt"
 	return os.Remove(filename)
 }
+func getFileName() *Name{
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fileN:=File{NameFile: getTxt(files),BegimFileName: getBegin(files)}
+	return &Name{FileN:fileN}
+	//return &Name{NameFile: getTxt(files),BegimFileName: getBegin(files)}
+}
+func getTxt(fileInf []fs.FileInfo) []string {
+	var fileTxt []string
+	for _, file := range fileInf{
+		if strings.HasSuffix(file.Name(),"txt"){
+			fileTxt=append(fileTxt,file.Name())
+		}
 
+	}
+	return fileTxt
+}
+func getBegin(fileInf []fs.FileInfo) []string {
+	var beginFile []string
+	for _, file := range fileInf{
+		if strings.HasSuffix(file.Name(),"txt"){
+			beginFile=append(beginFile,strings.Trim(file.Name(),".txt"))
+		}
+
+	}
+	return beginFile
+}
 func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
 	body, err := ioutil.ReadFile(filename)
@@ -76,9 +114,8 @@ func deleteHandler(w http.ResponseWriter, r *http.Request,title string)  {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 func indexHandler(w http.ResponseWriter,r *http.Request){
-	title := r.URL.Path[len("/"):]
-	p, _ := loadPage(title)
-	renderTemplate(w,"index",p)
+	p := getFileName()
+	renderIndex(w,"index",p)
 }
 
 var templates = template.Must(template.ParseFiles("edit.html", "view.html","index.html"))
@@ -89,7 +126,12 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
-
+func renderIndex(w http.ResponseWriter,tmpl string, n *Name)  {
+	err:=templates.ExecuteTemplate(w,tmpl+".html",n)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
 var validPath = regexp.MustCompile("^/(edit|save|view|delete)/([a-zA-Z0-9]+)$")
 
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
