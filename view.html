@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>{{.Title}}</h1>
-<img src="/static/images/2.png" height="200" width="600"/>
+<img src="/static/images/{{.ImageName}}" height="200" width="600"/>
 <div>{{printf "%s" .Body}}</div>
 <p><a href="/edit/{{.Title}}">edit</a></p>
 

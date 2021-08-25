@@ -72,24 +72,38 @@ func getBegin(fileInf []fs.FileInfo) []string {
 }
 func initImage(_nameFile string, title string)  {
 	var nameFile, err = filepath.Abs(_nameFile)
-	if err == nil {
-			fmt.Println("Absolute:", nameFile)
+	firstFile, _ := os.Open(_nameFile)
+	if err != nil {
+			fmt.Println("Absolute:",nameFile)
 	}
 	var path, er = os.Getwd()
 	if er != nil {
 		fmt.Println("Absolute:", path)
+		fmt.Println(path + "/static/images/" + title + "." + nameFile[strings.LastIndex(nameFile, ".")+1:])
 	}
-	os.Rename(nameFile,path+"/static/images/")
-
-
+	var end = nameFile[strings.LastIndex(nameFile, ".")+1:]
+	var s = path + "/static/images/" + title + "." + end
+	firstFile.Close()
+	os.Rename(nameFile,s)
 }
 func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
+	files, err := ioutil.ReadDir("./static/images")
+	var im string
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		if file.Name()[:strings.IndexByte(file.Name(), '.')] == title{
+			im= file.Name()
+		}
+	}
 	body, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return &Page{Title: title, Body: body}, nil
+	return &Page{Title: title, Body: body,ImageName: im}, nil
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
@@ -115,7 +129,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	if len(image)>0 {
 		initImage(image,title)
 	}
-	p := &Page{Title: title, Body: []byte(body)}
+	p := &Page{Title: title, Body: []byte(body),ImageName: image}
 	err := p.save()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
