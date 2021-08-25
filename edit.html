@@ -9,11 +9,11 @@
 
 <form action="/save/{{.Title}}" method="POST">
     <div><textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
+    <input type="file" name="file">
     <div><input type="submit" value="Save"></div>
 </form>
 <form action="/delete/{{.Title}}" method="POST">
     <div><input type="submit" value="Delete"></div>
 </form>
-
 </body>
 </html>
