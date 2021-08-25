@@ -14,6 +14,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -69,6 +70,19 @@ func getBegin(fileInf []fs.FileInfo) []string {
 	}
 	return beginFile
 }
+func initImage(_nameFile string, title string)  {
+	var nameFile, err = filepath.Abs(_nameFile)
+	if err == nil {
+			fmt.Println("Absolute:", nameFile)
+	}
+	var path, er = os.Getwd()
+	if er != nil {
+		fmt.Println("Absolute:", path)
+	}
+	os.Rename(nameFile,path+"/static/images/")
+
+
+}
 func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
 	body, err := ioutil.ReadFile(filename)
@@ -99,7 +113,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
 	image:=r.FormValue("file")
 	if len(image)>0 {
-		fmt.Println(image)
+		initImage(image,title)
 	}
 	p := &Page{Title: title, Body: []byte(body)}
 	err := p.save()
@@ -142,7 +156,7 @@ func renderIndex(w http.ResponseWriter,tmpl string, n *Name)  {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
-var validPath = regexp.MustCompile("^/(edit|save|view|delete|create|style)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(edit|save|view|delete|create|style|static)/([a-zA-Z0-9]+)$")
 
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -156,7 +170,7 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 }
 
 func main() {
-	http.Handle("static/", http.StripPrefix("static/", http.FileServer(http.Dir("static"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
