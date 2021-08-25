@@ -7,7 +7,7 @@
 <body>
 {{$data := .}}
 {{ range $index, $chunk:= .FileN.NameFile}}
-<li><a href="view/{{index $data.FileN.BegimFileName $index}}">${{index $data.FileN.NameFile $index}}</a></li>
+<li><a href="view/{{index $data.FileN.BegimFileName $index}}">{{index $data.FileN.NameFile $index}}</a></li>
 {{ end }}
 
 </body>
