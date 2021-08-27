@@ -12,10 +12,12 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -71,20 +73,57 @@ func getBegin(fileInf []fs.FileInfo) []string {
 	return beginFile
 }
 func initImage(_nameFile string, title string)  {
-	var nameFile, err = filepath.Abs(_nameFile)
-	firstFile, _ := os.Open(_nameFile)
+	var path, er = os.Getwd()
+	if er != nil {
+		fmt.Println("Absolute:", path)
+	}
+	var nameFile string
+	var err error
+	nameFile, err = filepath.Abs(_nameFile)
 	if err != nil {
+		fmt.Println("Absolute:",nameFile)
+	}
+	if checkPath(_nameFile,title) && !strings.Contains(nameFile,"/static/images/"){
+		 nameFile = path+"/static/images/"+_nameFile
+	}/* else {
+		var err error
+		nameFile, err = filepath.Abs(_nameFile)
+		if err != nil {
 			fmt.Println("Absolute:",nameFile)
+		}
+	}*/
+	//firstFile, _ := os.Open(_nameFile)
+	//if err != nil {
+	//		fmt.Println("Absolute:",nameFile)
+	//}
+	//var path, er = os.Getwd()
+	//if er != nil {
+	//	fmt.Println("Absolute:", path)
+	//	fmt.Println(path + "/static/images/" + title + "." + nameFile[strings.LastIndex(nameFile, ".")+1:])
+	//}
+	var end = nameFile[strings.LastIndex(nameFile, ".")+1:]
+	var s = path + "/static/images/" + title + "." + end
+	//firstFile.Close()
+	os.Rename(nameFile,s)
+}
+func checkPath(_path string,title string) (bool){
+	files, err := ioutil.ReadDir("./static/images")
+	if err != nil {
+		log.Fatal(err)
 	}
 	var path, er = os.Getwd()
 	if er != nil {
 		fmt.Println("Absolute:", path)
-		fmt.Println(path + "/static/images/" + title + "." + nameFile[strings.LastIndex(nameFile, ".")+1:])
 	}
-	var end = nameFile[strings.LastIndex(nameFile, ".")+1:]
-	var s = path + "/static/images/" + title + "." + end
-	firstFile.Close()
-	os.Rename(nameFile,s)
+	for _, file := range files {
+		if file.Name()[:strings.IndexByte(file.Name(), '.')] == title/*_path*/{
+			var end = _path[strings.LastIndex(_path, ".")+1:]
+			var endTitle = file.Name()[strings.LastIndex(file.Name(), ".")+1:]
+			os.Rename(path + "/static/images/"+title+"."+endTitle,path + "/static/images/"+strconv.Itoa(rand.Int())+"."+end)
+			return true
+		}
+	}
+	return false
 }
 func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
