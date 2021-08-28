@@ -50,7 +50,6 @@ func getFileName() *Name{
 	}
 	fileN:=File{NameFile: getTxt(files),BegimFileName: getBegin(files)}
 	return &Name{FileN:fileN}
-	//return &Name{NameFile: getTxt(files),BegimFileName: getBegin(files)}
 }
 func getTxt(fileInf []fs.FileInfo) []string {
 	var fileTxt []string
@@ -85,25 +84,9 @@ func initImage(_nameFile string, title string)  {
 	}
 	if checkPath(_nameFile,title) && !strings.Contains(nameFile,"/static/images/"){
 		 nameFile = path+"/static/images/"+_nameFile
-	}/* else {
-		var err error
-		nameFile, err = filepath.Abs(_nameFile)
-		if err != nil {
-			fmt.Println("Absolute:",nameFile)
-		}
-	}*/
-	//firstFile, _ := os.Open(_nameFile)
-	//if err != nil {
-	//		fmt.Println("Absolute:",nameFile)
-	//}
-	//var path, er = os.Getwd()
-	//if er != nil {
-	//	fmt.Println("Absolute:", path)
-	//	fmt.Println(path + "/static/images/" + title + "." + nameFile[strings.LastIndex(nameFile, ".")+1:])
-	//}
-	var end = nameFile[strings.LastIndex(nameFile, ".")+1:]
-	var s = path + "/static/images/" + title + "." + end
-	//firstFile.Close()
+	}
+	var end = filepath.Ext(nameFile)
+	var s = path + "/static/images/" + title + end
 	os.Rename(nameFile,s)
 }
 func checkPath(_path string,title string) (bool){
@@ -111,15 +94,16 @@ func checkPath(_path string,title string) (bool){
 	if err != nil {
 		log.Fatal(err)
 	}
+	var end = filepath.Ext(_path)
 	var path, er = os.Getwd()
 	if er != nil {
 		fmt.Println("Absolute:", path)
 	}
 	for _, file := range files {
-		if file.Name()[:strings.IndexByte(file.Name(), '.')] == title/*_path*/{
-			var end = _path[strings.LastIndex(_path, ".")+1:]
-			var endTitle = file.Name()[strings.LastIndex(file.Name(), ".")+1:]
-			os.Rename(path + "/static/images/"+title+"."+endTitle,path + "/static/images/"+strconv.Itoa(rand.Int())+"."+end)
+		if strings.TrimSuffix(file.Name(), end) == title ||  file.Name() == _path {
+
+			var endTitle = filepath.Ext(_path)
+			os.Rename(path + "/static/images/"+title+endTitle,path + "/static/images/"+strconv.Itoa(rand.Int())+end)
 			return true
 		}
 	}
@@ -230,5 +214,5 @@ func main() {
 	http.HandleFunc("/delete/",makeHandler(deleteHandler))
 	http.HandleFunc("/create/",makeHandler(createHandler))
 	http.HandleFunc("/",indexHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8084", nil))
 }

@@ -1,0 +1,11 @@
+*{
+    font-size: 3vh;
+}
+img{
+    width: 100vw;
+    height: 20vh;
+    object-fit: cover;
+     /*width: 100%;
+    height: 100%;*/
+    Padding: 5vh 20vw 5vh 20vw;
+}

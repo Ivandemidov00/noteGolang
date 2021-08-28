@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/static/style/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/style/view.css">
 </head>
 <body>
 <h1>{{.Title}}</h1>
 {{if .ImageName}}
-<img src="/static/images/{{.ImageName}}" height="200" width="600"/>
+<img src="/static/images/{{.ImageName}}"/>
 {{else}}
 {{end}}
-<div>{{printf "%s" .Body}}</div>
+<main>{{printf "%s" .Body}}</main>
 <p><a href="/edit/{{.Title}}">edit</a></p>
 
 <a href="/">index</a>

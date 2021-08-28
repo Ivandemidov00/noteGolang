@@ -1,7 +1,28 @@
 li{
-    color: green;
-    background-color:DodgerBlue;
+    color: #594a42;
 }
 *{
-    background-color:DodgerBlue;
+    background-color:#f2e8da;
+
+}
+main {
+    max-width: 70em;
+    margin: 0 auto;
+    padding: 0 1.5em;
+    overflow: hidden;
+}
+a:link {
+    color: #497DDD;
+    border-bottom: 1px dashed;
+}
+a:visited {
+    color: #EF7D55;
+}
+a:hover {
+    color: #154088;
+    border-bottom: .07em solid;
+}
+a:active {
+    color: #497DDD;
+    border-bottom: 1px dashed;
 }
