@@ -1,15 +1,11 @@
 li{
     color: #594a42;
+    font-size: 2.5vh;
 }
 *{
     background-color:#f2e8da;
-
-}
-main {
-    max-width: 70em;
-    margin: 0 auto;
-    padding: 0 1.5em;
-    overflow: hidden;
+    color: #594a42;
+    font-size: 2.5vh;
 }
 a:link {
     color: #497DDD;

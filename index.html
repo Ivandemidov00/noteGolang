@@ -3,24 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="static/style/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/style/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/style/index.css">
 </head>
 <body>
 <header>
-    This text is centered.
+    <h1>Note</h1>
 </header>
 <main>
 <form method="post" action="/create/1">
     <input type="text" name="name" size="40">
-    <input type="submit" value="create">
+    <input type="submit" value="create" class="button buttonCreate">
 </form>
 {{$data := .}}
 {{ range $index, $chunk:= .FileN.NameFile}}
 <li><a href="view/{{index $data.FileN.BegimFileName $index}}">{{index $data.FileN.NameFile $index}}</a></li>
 {{ end }}
 </main>
-<footer>
-    Я подвал сайта.
-</footer>
 </body>
 </html>

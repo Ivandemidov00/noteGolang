@@ -32,18 +32,16 @@ type File struct {
 }
 type Name struct {
 	FileN File
-	//NameFile []string
-	//BegimFileName []string
 }
-func (p *Page) save() error {
+func (p *Page) save() error {//запись и сохранение файла
 	filename := p.Title + ".txt"
 	return ioutil.WriteFile(filename, p.Body, 0600)
 }
-func (p *Page) delete() error {
+func (p *Page) delete() error {//удаление файла
 	filename :=p.Title+".txt"
 	return os.Remove(filename)
 }
-func getFileName() *Name{
+func getFileName() *Name{//
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
@@ -51,7 +49,7 @@ func getFileName() *Name{
 	fileN:=File{NameFile: getTxt(files),BegimFileName: getBegin(files)}
 	return &Name{FileN:fileN}
 }
-func getTxt(fileInf []fs.FileInfo) []string {
+func getTxt(fileInf []fs.FileInfo) []string {//
 	var fileTxt []string
 	for _, file := range fileInf{
 		if strings.HasSuffix(file.Name(),"txt"){
@@ -71,18 +69,18 @@ func getBegin(fileInf []fs.FileInfo) []string {
 	}
 	return beginFile
 }
-func initImage(_nameFile string, title string)  {
-	var path, er = os.Getwd()
+func initImage(_nameFile string, title string)  {//добавление изображения
+	var path, er = os.Getwd()//получаем путь где расположен main.go
 	if er != nil {
 		fmt.Println("Absolute:", path)
 	}
 	var nameFile string
 	var err error
-	nameFile, err = filepath.Abs(_nameFile)
+	nameFile, err = filepath.Abs(_nameFile)//получаем путь изображениия
 	if err != nil {
 		fmt.Println("Absolute:",nameFile)
 	}
-	if checkPath(_nameFile,title) && !strings.Contains(nameFile,"/static/images/"){
+	if checkPath(_nameFile,title) && !strings.Contains(nameFile,"/static/images/"){//содержит ли static/images файлы равные текщему названию изображения либо заметки
 		 nameFile = path+"/static/images/"+_nameFile
 	}
 	var end = filepath.Ext(nameFile)
@@ -103,7 +101,7 @@ func checkPath(_path string,title string) (bool){
 		if strings.TrimSuffix(file.Name(), end) == title ||  file.Name() == _path {
 
 			var endTitle = filepath.Ext(_path)
-			os.Rename(path + "/static/images/"+title+endTitle,path + "/static/images/"+strconv.Itoa(rand.Int())+end)
+			os.Rename(path + "/static/images/"+title+endTitle,path + "/static/images/"+strconv.Itoa(rand.Int())+end)//если у редактируемой заметки уже было изображение то его название смениться на набор случайных чисел
 			return true
 		}
 	}

@@ -7,14 +7,17 @@
     <link rel="stylesheet" type="text/css" href="/static/style/view.css">
 </head>
 <body>
+<header>
 <h1>{{.Title}}</h1>
+</header>
 {{if .ImageName}}
 <img src="/static/images/{{.ImageName}}"/>
 {{else}}
 {{end}}
 <main>{{printf "%s" .Body}}</main>
-<p><a href="/edit/{{.Title}}">edit</a></p>
-
-<a href="/">index</a>
+<footer>
+<p><a href="/edit/{{.Title}}">edit</a>
+<a href="/">index</a></p>
+</footer>
 </body>
 </html>
