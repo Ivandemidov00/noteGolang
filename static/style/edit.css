@@ -1,5 +1,5 @@
 input.button {
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50;
     border: none;
     color: white;
     padding: 1.6vh 2.2vw;
@@ -8,7 +8,7 @@ input.button {
     display: inline-block;
     font-size: 2.5vh;
     margin: 0.4vh 0.2vw;
-    -webkit-transition-duration: 0.3s; /* Safari */
+    -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
     cursor: pointer;
 }
@@ -41,9 +41,6 @@ input.buttonIndex:hover{
 .left{
     float: left;
 }
-/*.right{
-    float: left;
-}*/
 textarea{
     width: 60%;
     height: 15%;
