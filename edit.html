@@ -7,18 +7,18 @@
     <link rel="stylesheet" type="text/css" href="/static/style/edit.css">
 </head>
 <body>
+<header>
 <h1>Editing {{.Title}}</h1>
-<div class="left">
+</header>
+<main>
 <form action="/save/{{.Title}}" method="POST">
     <textarea name="body" rows="20" cols="25">{{printf "%s" .Body}}</textarea>
     <input type="file" name="file">
    <input type="submit" value="Save" class="button buttonSave">
 </form>
-</div>
-<div class="right">
 <form action="/delete/{{.Title}}" method="POST">
     <input type="submit" value="Delete" class="button buttonDelete">
 </form>
-</div>
+</main>
 </body>
 </html>

@@ -1,22 +1,20 @@
 
 img{
-    width: 80%;
+    width: 50%;
     height: 20%;
     object-fit: cover;
-    Padding: 0% 20% 5% 20%;
+    Padding: 0% 20% 2% 20%;
 }
 main{
-    width: 80%;
     height: 20%;
     object-fit: cover;
-    Padding: 5% 20% 5% 20%;
+    Padding: 0% 20% 0% 20%;
     overflow-x:hidden;
 }
 header{
     width: 80%;
     height: 20%;
     object-fit: cover;
-    Padding: 5% 20% -5% 20%;
     flex: 0 0 auto;
     display: inline-block;
     text-align: center;
@@ -26,10 +24,8 @@ h1{
 
 }
 footer{
-    width: 80%;
-    height: 20%;
     object-fit: cover;
-    Padding: 0% 20% 5% 20%;
+    Padding: 0% 20% 0% 20%;
     flex: 0 0 auto;
     display: inline-block;
     text-align: center;
@@ -47,4 +43,9 @@ a:link, a:visited {
 a:hover, a:active {
     background-color: green;
     color: white;
+}
+@media only screen and (max-device-width: 1080px) {
+    img{
+        width: 80%;
+    }
 }

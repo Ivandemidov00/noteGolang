@@ -5,6 +5,7 @@
 //РАЗМЕТКА
 //Для поддержки адаптивности используются единицы измерения как hv,hw и %, большего не требуется т к вёрстка относительно проста
 //
+///usr/bin/true; exec /usr/bin/env go run "$0" "$@"
 package main
 
 import (
@@ -23,38 +24,39 @@ import (
 )
 
 type Page struct {
-	Title string
-	Body  []byte
+	Title     string
+	Body      []byte
 	ImageName string
 }
 type File struct {
-	NameFile []string
+	NameFile      []string
 	BegimFileName []string
 }
 type Name struct {
 	FileN File
 }
-func (p *Page) save() error {//запись и сохранение файла
+
+func (p *Page) save() error { //запись и сохранение файла
 	filename := p.Title + ".txt"
 	return ioutil.WriteFile(filename, p.Body, 0600)
 }
-func (p *Page) delete() error {//удаление файла
-	filename :=p.Title+".txt"
+func (p *Page) delete() error { //удаление файла
+	filename := p.Title + ".txt"
 	return os.Remove(filename)
 }
-func getFileName() *Name{//
+func getFileName() *Name { //
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fileN:=File{NameFile: getTxt(files),BegimFileName: getBegin(files)}
-	return &Name{FileN:fileN}
+	fileN := File{NameFile: getTxt(files), BegimFileName: getBegin(files)}
+	return &Name{FileN: fileN}
 }
-func getTxt(fileInf []fs.FileInfo) []string {//
+func getTxt(fileInf []fs.FileInfo) []string { //
 	var fileTxt []string
-	for _, file := range fileInf{
-		if strings.HasSuffix(file.Name(),"txt"){
-			fileTxt=append(fileTxt,file.Name())
+	for _, file := range fileInf {
+		if strings.HasSuffix(file.Name(), "txt") {
+			fileTxt = append(fileTxt, file.Name())
 		}
 
 	}
@@ -62,33 +64,33 @@ func getTxt(fileInf []fs.FileInfo) []string {//
 }
 func getBegin(fileInf []fs.FileInfo) []string {
 	var beginFile []string
-	for _, file := range fileInf{
-		if strings.HasSuffix(file.Name(),"txt"){
-			beginFile=append(beginFile,strings.Trim(file.Name(),".txt"))
+	for _, file := range fileInf {
+		if strings.HasSuffix(file.Name(), "txt") {
+			beginFile = append(beginFile, strings.Trim(file.Name(), ".txt"))
 		}
 
 	}
 	return beginFile
 }
-func initImage(_nameFile string, title string)  {//добавление изображения
-	var path, er = os.Getwd()//получаем путь где расположен main.go
+func initImage(_nameFile string, title string) { //добавление изображения
+	var path, er = os.Getwd() //получаем путь где расположен main.go
 	if er != nil {
 		fmt.Println("Absolute:", path)
 	}
 	var nameFile string
 	var err error
-	nameFile, err = filepath.Abs(_nameFile)//получаем путь изображениия
+	nameFile, err = filepath.Abs(_nameFile) //получаем путь изображениия
 	if err != nil {
-		fmt.Println("Absolute:",nameFile)
+		fmt.Println("Absolute:", nameFile)
 	}
-	if checkPath(_nameFile,title) && !strings.Contains(nameFile,"/static/images/"){//содержит ли static/images файлы равные текщему названию изображения либо заметки
-		 nameFile = path+"/static/images/"+_nameFile
+	if checkPath(_nameFile, title) && !strings.Contains(nameFile, "/static/images/") { //содержит ли static/images файлы равные текщему названию изображения либо заметки
+		nameFile = path + "/static/images/" + _nameFile
 	}
 	var end = filepath.Ext(nameFile)
 	var s = path + "/static/images/" + title + end
-	os.Rename(nameFile,s)
+	os.Rename(nameFile, s)
 }
-func checkPath(_path string,title string) (bool){
+func checkPath(_path string, title string) bool {
 	files, err := ioutil.ReadDir("./static/images")
 	if err != nil {
 		log.Fatal(err)
@@ -99,10 +101,13 @@ func checkPath(_path string,title string) (bool){
 		fmt.Println("Absolute:", path)
 	}
 	for _, file := range files {
-		if strings.TrimSuffix(file.Name(), end) == title ||  file.Name() == _path {
+		if strings.TrimSuffix(file.Name(), end) == title || file.Name() == _path {
 
 			var endTitle = filepath.Ext(_path)
-			os.Rename(path + "/static/images/"+title+endTitle,path + "/static/images/"+strconv.Itoa(rand.Int())+end)//если у редактируемой заметки уже было изображение то его название смениться на набор случайных чисел
+			err = os.Rename(path+"/static/images/"+title+endTitle, path+"/static/images/"+strconv.Itoa(rand.Int())+end)
+			if err != nil {
+				return false
+			} //если у редактируемой заметки уже было изображение то его название смениться на набор случайных чисел
 			return true
 		}
 	}
@@ -117,15 +122,15 @@ func loadPage(title string) (*Page, error) {
 	}
 
 	for _, file := range files {
-		if file.Name()[:strings.IndexByte(file.Name(), '.')] == title{
-			im= file.Name()
+		if file.Name()[:strings.IndexByte(file.Name(), '.')] == title {
+			im = file.Name()
 		}
 	}
 	body, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return &Page{Title: title, Body: body,ImageName: im}, nil
+	return &Page{Title: title, Body: body, ImageName: im}, nil
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
@@ -137,8 +142,8 @@ func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	renderTemplate(w, "view", p)
 }
 
-func editHandler(w http.ResponseWriter, r *http.Request, title string) {
-	p, err := loadPage(title)
+func editHandler(w http.ResponseWriter, _ *http.Request, title string) {
+	p, err := loadPage("/home/linchik/go/src/exam/" + title)
 	if err != nil {
 		p = &Page{Title: title}
 	}
@@ -147,11 +152,11 @@ func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
-	image:=r.FormValue("file")
-	if len(image)>0 {
-		initImage(image,title)
+	image := r.FormValue("file")
+	if len(image) > 0 {
+		initImage(image, title)
 	}
-	p := &Page{Title: title, Body: []byte(body),ImageName: image}
+	p := &Page{Title: title, Body: []byte(body), ImageName: image}
 	err := p.save()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -159,9 +164,9 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	}
 	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
-func deleteHandler(w http.ResponseWriter, r *http.Request,title string)  {
+func deleteHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
-	p:=&Page{Title: title,Body: []byte(body)}
+	p := &Page{Title: title, Body: []byte(body)}
 	err := p.delete()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -169,16 +174,16 @@ func deleteHandler(w http.ResponseWriter, r *http.Request,title string)  {
 	}
 	http.Redirect(w, r, "/", http.StatusFound)
 }
-func createHandler(w http.ResponseWriter,r *http.Request,title string)  {
+func createHandler(w http.ResponseWriter, r *http.Request, title string) {
 	title = r.FormValue("name")
-	http.Redirect(w,r,"/edit/"+title,http.StatusFound)
+	http.Redirect(w, r, "/edit/"+title, http.StatusFound)
 }
-func indexHandler(w http.ResponseWriter,r *http.Request){
+func indexHandler(w http.ResponseWriter, _ *http.Request) {
 	p := getFileName()
-	renderIndex(w,"index",p)
+	renderIndex(w, "index", p)
 }
 
-var templates = template.Must(template.ParseFiles("edit.html", "view.html","index.html"))
+var templates = template.Must(template.ParseFiles("/home/linchik/go/src/exam/edit.html", "/home/linchik/go/src/exam/view.html", "/home/linchik/go/src/exam/index.html"))
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", p)
@@ -186,12 +191,13 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
-func renderIndex(w http.ResponseWriter,tmpl string, n *Name)  {
-	err:=templates.ExecuteTemplate(w,tmpl+".html",n)
+func renderIndex(w http.ResponseWriter, tmpl string, n *Name) {
+	err := templates.ExecuteTemplate(w, tmpl+".html", n)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
+
 var validPath = regexp.MustCompile("^/(edit|save|view|delete|create|style|static)/([a-zA-Z0-9]+)$")
 
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
@@ -210,8 +216,8 @@ func main() {
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
-	http.HandleFunc("/delete/",makeHandler(deleteHandler))
-	http.HandleFunc("/create/",makeHandler(createHandler))
-	http.HandleFunc("/",indexHandler)
-	log.Fatal(http.ListenAndServe(":8084", nil))
+	http.HandleFunc("/delete/", makeHandler(deleteHandler))
+	http.HandleFunc("/create/", makeHandler(createHandler))
+	http.HandleFunc("/", indexHandler)
+	log.Fatal(http.ListenAndServe(":8097", nil))
 }
