@@ -7,8 +7,9 @@ h1{
     font-size: 5vh;
 }
 input[type=text]{
-border: none;
-border-bottom: 0.4vh solid  #594a42;
+    width: 100%;
+    border: none;
+    border-bottom: 0.4vh solid  #594a42;
 }
 input[type=text]:active{
     border: none;
@@ -39,11 +40,11 @@ input.buttonCreate:hover{
     color: #594a42;
 }
 main{
-    Padding: 5% 20% 5% 20%;
+    Padding: 0% 20% 5% 20%;
 }
 footer{
     Padding: 5% 20% 5% 20%;
 }
 header{
-    Padding: 5% 20% 5% 20%;
+    Padding: 5% 20% 0% 20%;
 }
