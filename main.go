@@ -143,7 +143,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
 }
 
 func editHandler(w http.ResponseWriter, _ *http.Request, title string) {
-	p, err := loadPage("/home/linchik/go/src/exam/" + title)
+	p, err := loadPage(title)
 	if err != nil {
 		p = &Page{Title: title}
 	}
@@ -183,7 +183,7 @@ func indexHandler(w http.ResponseWriter, _ *http.Request) {
 	renderIndex(w, "index", p)
 }
 
-var templates = template.Must(template.ParseFiles("/home/linchik/go/src/exam/edit.html", "/home/linchik/go/src/exam/view.html", "/home/linchik/go/src/exam/index.html"))
+var templates = template.Must(template.ParseFiles("edit.html", "view.html", "index.html"))
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", p)
@@ -219,5 +219,5 @@ func main() {
 	http.HandleFunc("/delete/", makeHandler(deleteHandler))
 	http.HandleFunc("/create/", makeHandler(createHandler))
 	http.HandleFunc("/", indexHandler)
-	log.Fatal(http.ListenAndServe(":8097", nil))
+	log.Fatal(http.ListenAndServe(":8098", nil))
 }

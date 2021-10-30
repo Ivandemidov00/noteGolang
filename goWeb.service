@@ -1,0 +1,17 @@
+[Unit]
+Description=goWeb
+After=network.target
+
+[Service]
+Type=simple
+User=linchik
+Restart=always
+RestartSec=5s
+Group=linchik
+WorkingDirectory=/home/linchik/go/src/exam
+ExecStart=/home/linchik/go/src/exam/main
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
